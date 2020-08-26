@@ -14,12 +14,30 @@ Snake::Snake(QWidget* parent) : QWidget(parent) {
   bug = new Bug(this);
 
   timer = new QTimer(this);
-  timer->start(80);
+  // timer->start(80);
   connect(timer, SIGNAL(timeout()), this, SLOT(oneMove()));
   connect(timer, SIGNAL(timeout()), this, SLOT(update()));
 }
 
 Snake::~Snake() {}
+
+void Snake::restart() {
+  // Code of shit. Is there a better approach?
+  grids = {};
+  grids.push_front({19, 19});
+  grids.push_front({20, 19});
+  dir = RIGHT;
+  afterEating = 0;
+  delete bug;
+  bug = new Bug(this);
+  delete timer;
+  timer = new QTimer(this);
+  // timer->start(80);
+  connect(timer, SIGNAL(timeout()), this, SLOT(oneMove()));
+  connect(timer, SIGNAL(timeout()), this, SLOT(update()));
+
+  update();
+}
 
 void Snake::paintEvent(QPaintEvent* event) {
   Q_UNUSED(event);
@@ -74,7 +92,7 @@ void Snake::oneMove() {
     if (afterEating == 3) afterEating = 0;
   }
 
-  if (afterEating == 1) {  //生成新食物
+  if (next == bug->getPs()) {  //生成新食物
     do {
       bug->generateRandomPs();
     } while (grids.contains(bug->getPs()));

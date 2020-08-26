@@ -50,6 +50,8 @@
     "typeinfo": "cpp",
     "variant": "cpp",
     "qkeyeventtransition": "cpp",
-    "qkeyevent": "cpp"
+    "qkeyevent": "cpp",
+    "qmenu": "cpp",
+    "qmenubar": "cpp"
   }
 }

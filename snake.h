@@ -21,7 +21,11 @@ class Snake : public QWidget {
   explicit Snake(QWidget* parent);
   ~Snake();
 
+  void restart();  // Code of shit. Is there a better approach?
+
   bool validMove(const POS& next);
+
+  QTimer* timer;
 
  protected:
   void paintEvent(QPaintEvent* event);
@@ -30,7 +34,6 @@ class Snake : public QWidget {
   QList<POS> grids;
   DIR dir;
   Bug* bug;
-  QTimer* timer;
   int afterEating;
 
  public slots:
