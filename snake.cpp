@@ -76,3 +76,24 @@ bool Snake::validMove(const POS& next) {
 
   return true;
 }
+
+void Snake::dirUP() {
+  qDebug() << "UP";
+  if (dir == UP || dir == DOWN) return;
+  dir = UP;
+}
+void Snake::dirDOWN() {
+  qDebug() << "DOWN";
+  if (dir == UP || dir == DOWN) return;
+  dir = DOWN;
+}
+void Snake::dirRIGHT() {
+  qDebug() << "RIGHT";
+  if (dir == RIGHT || dir == LEFT) return;
+  dir = RIGHT;
+}
+void Snake::dirLEFT() {
+  qDebug() << "LEFT";
+  if (dir == RIGHT || dir == LEFT) return;
+  dir = LEFT;
+}

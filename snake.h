@@ -23,6 +23,11 @@ class Snake : public QWidget {
  public slots:
   void oneMove();
 
+  void dirUP();
+  void dirDOWN();
+  void dirRIGHT();
+  void dirLEFT();
+
  signals:
   void gameOver();
 };
