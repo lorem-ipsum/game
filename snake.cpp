@@ -9,8 +9,11 @@ Snake::Snake(QWidget* parent) : QWidget(parent) {
   grids.push_front({19, 19});
   grids.push_front({20, 19});
   dir = RIGHT;
+  afterEating = 0;
 
-  QTimer* timer = new QTimer(this);
+  bug = new Bug(this);
+
+  timer = new QTimer(this);
   timer->start(80);
   connect(timer, SIGNAL(timeout()), this, SLOT(oneMove()));
   connect(timer, SIGNAL(timeout()), this, SLOT(update()));
@@ -20,17 +23,25 @@ Snake::~Snake() {}
 
 void Snake::paintEvent(QPaintEvent* event) {
   Q_UNUSED(event);
+
   QPainter* painter = new QPainter(this);
   painter->setPen(Qt::NoPen);
+
+  // Draw the snake
   for (POS body : grids) {
     painter->fillRect(5 + 16 * body.first, 5 + 16 * body.second, 14, 14,
                       Qt::gray);
   }
+
+  // Draw the bug
+  painter->fillRect(5 + 16 * bug->getPs().first, 5 + 16 * bug->getPs().second,
+                    14, 14, Qt::red);
+
   painter->end();
 }
 
 void Snake::oneMove() {
-  qDebug() << "oneMove!";
+  // qDebug() << "oneMove!";
 
   POS next = grids.front();
   switch (dir) {
@@ -51,22 +62,28 @@ void Snake::oneMove() {
       break;
   }
 
-  if (!validMove(next)) {
+  if (!validMove(next)) {  //撞到墙，之后还要考虑障碍 TODO
     emit gameOver();
-  } else {
-    // TODO
-    // 前进一格，要考虑食物
-
-    qDebug() << "ELSE\n";
-
+  } else if (next != bug->getPs() &&
+             afterEating == 0) {  //没有吃到事物，且并非进食后片刻
     grids.push_front(next);
     grids.pop_back();
+  } else {  //吃到了事物，或者刚刚进食
+    grids.push_front(next);
+    ++afterEating;
+    if (afterEating == 3) afterEating = 0;
+  }
+
+  if (afterEating == 1) {  //生成新食物
+    do {
+      bug->generateRandomPs();
+    } while (grids.contains(bug->getPs()));
   }
 }
 
 bool Snake::validMove(const POS& next) {
-  qDebug() << "next is"
-           << "(" << next.first << ", " << next.second << ")\n";
+  // qDebug() << "next is"
+  //          << "(" << next.first << ", " << next.second << ")\n";
 
   if (grids.contains(next)) return false;
 

@@ -1,7 +1,17 @@
-#include <QList>
-#include <QWidget>
+#ifndef SNAKE_H
+#define SNAKE_H
 
-typedef std::pair<int, int> POS;
+#include <QList>
+#include <QTimer>
+#include <QWidget>
+#include <utility>
+
+#include "bug.h"
+
+#ifndef POS
+#define POS std::pair<int, int>
+#endif
+
 enum DIR { UP, DOWN, RIGHT, LEFT };
 
 class Snake : public QWidget {
@@ -19,6 +29,9 @@ class Snake : public QWidget {
  private:
   QList<POS> grids;
   DIR dir;
+  Bug* bug;
+  QTimer* timer;
+  int afterEating;
 
  public slots:
   void oneMove();
@@ -31,3 +44,5 @@ class Snake : public QWidget {
  signals:
   void gameOver();
 };
+
+#endif  // SNAKE_H

@@ -5,6 +5,7 @@
 #include <QTextStream>
 
 #include "background.h"
+#include "bug.h"
 #include "snake.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
@@ -15,6 +16,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 
   Snake *snake = new Snake(this);
   snake->setGeometry(120, 120, 648, 648);
+
+  // Bug *bug = new Bug(this);
+  // bug->setGeometry(120, 120, 648, 648);
 
   connect(this, SIGNAL(UP_pressed()), snake, SLOT(dirUP()));
   connect(this, SIGNAL(DOWN_pressed()), snake, SLOT(dirDOWN()));

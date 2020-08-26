@@ -19,12 +19,14 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     background.cpp \
-    snake.cpp
+    snake.cpp \
+    bug.cpp
 
 HEADERS += \
     mainwindow.h \
     background.h \
-    snake.h
+    snake.h \
+    bug.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

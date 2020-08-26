@@ -31,9 +31,13 @@ class MainWindow : public QMainWindow {
   }
 
  signals:
+  // Move around
   void UP_pressed();
   void DOWN_pressed();
   void RIGHT_pressed();
   void LEFT_pressed();
+
+  //  public slots:
+  //   void newBug();
 };
 #endif  // MAINWINDOW_H
