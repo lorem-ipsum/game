@@ -41,7 +41,6 @@ class MainWindow : public QMainWindow {
   void disConnectArrowKeysToSnake();
 
  signals:
-  // Move around
   void UP_pressed();
   void DOWN_pressed();
   void RIGHT_pressed();

@@ -95,10 +95,10 @@ void Snake::oneMove() {
       break;
   }
 
-  if (!validMove(next)) {  //撞到墙 or 障碍
+  if (!validMove(next)) {  //撞到墙 or 障碍 or 蛇身
     emit gameOver();
   } else if (next != bug->getPs() &&
-             afterEating_ == 0) {  //没有吃到事物，且并非进食后片刻
+             afterEating_ == 0) {  //没有吃到事物，且并非进食后三步之内
     body_.push_front(next);
     body_.pop_back();
   } else {  //吃到了事物，或者刚刚进食

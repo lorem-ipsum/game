@@ -19,7 +19,6 @@ class Bug : public QWidget {
   ~Bug();
 
   void generateRandomPs();
-  // void paintEvent(QPaintEvent* event);
 
   POS getPs() const;
 

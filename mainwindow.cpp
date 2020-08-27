@@ -23,6 +23,7 @@
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
   setFixedSize(1820, 1400);
+  setWindowTitle("Snake");
 
   bg = new Background(this);
   bg->setGeometry(112, 152, 1280, 1280);
@@ -50,12 +51,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
   connect(snake, &Snake::timeFlies, [=](int time) {
     // Update label
     label->setText(QString("Score: %1").arg(time));
-  });
-
-  connect(snake, &Snake::gameOver, [=]() {
-    snake->timer->stop();
-    // TODO
-    label->setText("Game Over");
   });
 
   // Actions
@@ -387,6 +382,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
   connect(snake, SIGNAL(gameOver()), gameOverAction, SLOT(trigger()));
 
   connect(gameOverAction, &QAction::triggered, [=]() {
+    snake->timer->stop();
+    label->setText("Game Over");
+
     startAction->setEnabled(false);
     pauseAction->setEnabled(false);
     resumeAction->setEnabled(false);

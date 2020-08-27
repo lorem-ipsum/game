@@ -27,10 +27,7 @@ class Snake : public QWidget {
   QList<POS> getBody() const { return body_; }
   QList<POS> getObstacles() const { return obstacles_; }
   DIR getDir() const { return dir_; }
-  int getTime() const {
-    // qDebug() << time_;
-    return time_;
-  }
+  int getTime() const { return time_; }
   POS getBug() const { return bug->getPs(); }
 
   void restart();  // Code of shit. Is there a better approach?
@@ -38,13 +35,11 @@ class Snake : public QWidget {
   bool validMove(const POS& next);
 
   void load(QJsonArray body, QJsonArray obstacles, QJsonArray bug, DIR dir,
-            int time);
+            int time);  // TODO
 
   QTimer* timer;
 
   bool timeToToggleObstacles;
-
-  // QLabel* label;
 
  protected:
   void paintEvent(QPaintEvent* event);
