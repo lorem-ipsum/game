@@ -146,7 +146,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     loadBtn->setEnabled(false);
 
     setFocusProxy(snake);
-    snake->setFocusPolicy(Qt::StrongFocus);
+    snake->setFocus();
+    // snake->setFocusPolicy(Qt::StrongFocus);
   });
 
   connect(pauseAction, &QAction::triggered, [=]() {
@@ -168,7 +169,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     loadBtn->setEnabled(false);
 
     setFocusProxy(snake);
-    snake->setFocusPolicy(Qt::StrongFocus);
+    snake->setFocus();
+    // snake->setFocusPolicy(Qt::StrongFocus);
   });
 
   connect(resumeAction, &QAction::triggered, [=]() {
@@ -190,7 +192,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     loadBtn->setEnabled(false);
 
     setFocusProxy(snake);
-    snake->setFocusPolicy(Qt::StrongFocus);
+    snake->setFocus();
+    // snake->setFocusPolicy(Qt::StrongFocus);
   });
 
   connect(restartAction, &QAction::triggered, [=]() {
@@ -212,7 +215,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     loadBtn->setEnabled(true);
 
     setFocusProxy(snake);
-    snake->setFocusPolicy(Qt::StrongFocus);
+    snake->setFocus();
+    // snake->setFocusPolicy(Qt::StrongFocus);
   });
 
   connect(saveAction, &QAction::triggered, [=]() {
@@ -228,7 +232,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     // loadAction->setEnabled(false);
 
     setFocusProxy(snake);
-    snake->setFocusPolicy(Qt::StrongFocus);
+    snake->setFocus();
+    // snake->setFocusPolicy(Qt::StrongFocus);
   });
 
   connect(loadAction, &QAction::triggered, [=]() {
@@ -244,10 +249,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     // loadAction->setEnabled(false);
 
     setFocusProxy(snake);
-    snake->setFocusPolicy(Qt::StrongFocus);
+    snake->setFocus();
+    // snake->setFocusPolicy(Qt::StrongFocus);
   });
 
-  snake->setFocusPolicy(Qt::StrongFocus);
+  // snake->setFocusPolicy(Qt::StrongFocus);
 }
 
 MainWindow::~MainWindow() {}
