@@ -57,6 +57,9 @@ void Snake::paintEvent(QPaintEvent* event) {
     painter->fillRect(5 + 28 * grid.first, 5 + 28 * grid.second, 26, 26,
                       Qt::green);
   }
+  // The head of snake is darkgreen
+  painter->fillRect(5 + 28 * body_.front().first, 5 + 28 * body_.front().second,
+                    26, 26, Qt::darkGreen);
 
   // Draw the obstacles
   for (POS obs : obstacles_) {
@@ -74,6 +77,7 @@ void Snake::paintEvent(QPaintEvent* event) {
 void Snake::oneMove() {
   // qDebug() << "oneMove!";
   ++time_;
+  emit timeFlies(time_);
 
   POS next = body_.front();
   switch (dir_) {
@@ -127,24 +131,28 @@ bool Snake::validMove(const POS& next) {
 }
 
 void Snake::dirUP() {
-  qDebug() << "UP";
+  // qDebug() << "UP";
   if (dir_ == UP || dir_ == DOWN) return;
-  dir_ = UP;
+  POS up = {body_.at(0).first, body_.at(0).second - 1};
+  if (up != body_.at(1)) dir_ = UP;
 }
 void Snake::dirDOWN() {
-  qDebug() << "DOWN";
+  // qDebug() << "DOWN";
   if (dir_ == UP || dir_ == DOWN) return;
-  dir_ = DOWN;
+  POS down = {body_.at(0).first, body_.at(0).second + 1};
+  if (down != body_.at(1)) dir_ = DOWN;
 }
 void Snake::dirRIGHT() {
-  qDebug() << "RIGHT";
+  // qDebug() << "RIGHT";
   if (dir_ == RIGHT || dir_ == LEFT) return;
-  dir_ = RIGHT;
+  POS right = {body_.at(0).first + 1, body_.at(0).second};
+  if (right != body_.at(1)) dir_ = RIGHT;
 }
 void Snake::dirLEFT() {
-  qDebug() << "LEFT";
+  // qDebug() << "LEFT";
   if (dir_ == RIGHT || dir_ == LEFT) return;
-  dir_ = LEFT;
+  POS left = {body_.at(0).first - 1, body_.at(0).second};
+  if (left != body_.at(1)) dir_ = LEFT;
 }
 
 void Snake::mousePressEvent(QMouseEvent* event) {

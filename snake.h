@@ -2,6 +2,7 @@
 #define SNAKE_H
 
 #include <QJsonArray>
+#include <QLabel>
 #include <QList>
 #include <QMouseEvent>
 #include <QTimer>
@@ -26,7 +27,10 @@ class Snake : public QWidget {
   QList<POS> getBody() const { return body_; }
   QList<POS> getObstacles() const { return obstacles_; }
   DIR getDir() const { return dir_; }
-  int getTime() const { return time_; }
+  int getTime() const {
+    // qDebug() << time_;
+    return time_;
+  }
   POS getBug() const { return bug->getPs(); }
 
   void restart();  // Code of shit. Is there a better approach?
@@ -39,6 +43,8 @@ class Snake : public QWidget {
   QTimer* timer;
 
   bool timeToToggleObstacles;
+
+  // QLabel* label;
 
  protected:
   void paintEvent(QPaintEvent* event);
@@ -65,6 +71,7 @@ class Snake : public QWidget {
 
  signals:
   void gameOver();
+  void timeFlies(int);
 };
 
 #endif  // SNAKE_H

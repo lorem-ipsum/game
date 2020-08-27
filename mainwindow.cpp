@@ -22,22 +22,40 @@
 #include "snake.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
-  resize(1500, 1500);
+  setFixedSize(1820, 1400);
 
   bg = new Background(this);
-  bg->setGeometry(120, 120, 1280, 1280);
+  bg->setGeometry(112, 152, 1280, 1280);
 
   snake = new Snake(this);
-  snake->setGeometry(120, 120, 1280, 1280);
+  snake->setGeometry(112, 152, 1280, 1280);
 
-  connect(this, SIGNAL(UP_pressed()), snake, SLOT(dirUP()));
-  connect(this, SIGNAL(DOWN_pressed()), snake, SLOT(dirDOWN()));
-  connect(this, SIGNAL(RIGHT_pressed()), snake, SLOT(dirRIGHT()));
-  connect(this, SIGNAL(LEFT_pressed()), snake, SLOT(dirLEFT()));
+  QLabel *label = new QLabel(this);
+  label->setGeometry(1376, 300, 288, 180);
+
+  QLabel *cp = new QLabel("© 2020, CLT", this);
+  cp->setGeometry(1400, 1056, 240, 180);
+  cp->setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
+  cp->setFont(QFont("Helvetica", 12));
+
+  label->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+
+  label->setStyleSheet(
+      "background-color:rgb(233, 233, 233); "
+      "color: black; border: none; font: 36px; ");
+  label->setText("Score: 0");
+
+  connectArrowKeysToSnake();
+
+  connect(snake, &Snake::timeFlies, [=](int time) {
+    // Update label
+    label->setText(QString("Score: %1").arg(time));
+  });
 
   connect(snake, &Snake::gameOver, [=]() {
     snake->timer->stop();
     // TODO
+    label->setText("Game Over");
   });
 
   // Actions
@@ -74,6 +92,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 
   // Menu
   QMenuBar *menubar = new QMenuBar(this);
+  menubar->setFont(QFont("Helvetica"));
   this->setMenuBar(menubar);
 
   QMenu *fileMenu = new QMenu("File");
@@ -116,7 +135,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 
   for (int i = 0; i < 7; ++i) {
     btns->buttons()[i]->setFont(QFont("Helvetica"));
-    btns->buttons()[i]->setGeometry(1280, 640 + 80 * i, 80, 40);
+    btns->buttons()[i]->setGeometry(1440, 516 + 80 * i, 160, 64);
   }
 
   // Toolbar
@@ -125,6 +144,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
   toolBar->addActions({startAction, pauseAction, resumeAction, restartAction,
                        saveAction, loadAction, exitAction});
   toolBar->setMovable(false);
+  toolBar->setFont(QFont("Helvetica"));
 
   // this->addToolBar(Qt::RightToolBarArea, toolBar);
   // toolBar->setGeometry(20, 20, 100, 50);
@@ -150,6 +170,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
   // setFocusProxy(startBtn);
 
   connect(startAction, &QAction::triggered, [=]() {
+    label->setText("Score: 0");
+
     snake->timer->start(80);
 
     // disable actions and hide buttons
@@ -172,6 +194,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     setFocusProxy(snake);
     snake->setFocus();
     // snake->setFocusPolicy(Qt::StrongFocus);
+    connectArrowKeysToSnake();
   });
 
   connect(pauseAction, &QAction::triggered, [=]() {
@@ -197,6 +220,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     setFocusProxy(snake);
     snake->setFocus();
     // snake->setFocusPolicy(Qt::StrongFocus);
+    disConnectArrowKeysToSnake();
   });
 
   connect(resumeAction, &QAction::triggered, [=]() {
@@ -222,9 +246,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     setFocusProxy(snake);
     snake->setFocus();
     // snake->setFocusPolicy(Qt::StrongFocus);
+    connectArrowKeysToSnake();
   });
 
   connect(restartAction, &QAction::triggered, [=]() {
+    label->setText("Score: 0");
+
     snake->restart();
 
     // disable actions and hide buttons
@@ -247,18 +274,20 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     setFocusProxy(snake);
     snake->setFocus();
     // snake->setFocusPolicy(Qt::StrongFocus);
+    disConnectArrowKeysToSnake();
   });
 
   connect(saveAction, &QAction::triggered, [=]() {
     // Save game
-    qDebug() << "Save";
+    // qDebug() << "Save";
 
-    QFile saveFile("save.json");
+    QString fileName =
+        QFileDialog::getSaveFileName(this, tr("Choose a directory to save"),
+                                     "save.json", tr("JSON Files(*json)"));
+
+    QFile saveFile(fileName);
 
     saveFile.open(QIODevice::WriteOnly);
-
-    QFileDialog::getSaveFileName(this, tr("Choose a directory to save"),
-                                 "save.json", tr("JSON Files(*json)"));
 
     // Write JSON to 'saveFile'
 
@@ -327,7 +356,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 
   connect(loadAction, &QAction::triggered, [=]() {
     // Load game
-    qDebug() << "Load";
+    // qDebug() << "Load";
 
     QString fileName = QFileDialog::getOpenFileName(
         this, tr("Choose a file to load in"), "", tr("JSON Files(*json)"));
@@ -371,6 +400,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
       }
     }
 
+    label->setText(QString("Score: %1").arg(snake->getTime()));
+
     // disable actions and hide buttons
     // startAction->setEnabled(false);
     // pauseAction->setEnabled(false);
@@ -389,7 +420,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
   connect(snake, SIGNAL(gameOver()), gameOverAction, SLOT(trigger()));
 
   connect(gameOverAction, &QAction::triggered, [=]() {
-    qDebug() << "Game Over";
+    // qDebug() << "Game Over";
     // disable actions and hide buttons
     startAction->setEnabled(false);
     pauseAction->setEnabled(false);
@@ -413,3 +444,17 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 }
 
 MainWindow::~MainWindow() {}
+
+void MainWindow::connectArrowKeysToSnake() {
+  connect(this, SIGNAL(UP_pressed()), snake, SLOT(dirUP()));
+  connect(this, SIGNAL(DOWN_pressed()), snake, SLOT(dirDOWN()));
+  connect(this, SIGNAL(RIGHT_pressed()), snake, SLOT(dirRIGHT()));
+  connect(this, SIGNAL(LEFT_pressed()), snake, SLOT(dirLEFT()));
+}
+
+void MainWindow::disConnectArrowKeysToSnake() {
+  disconnect(this, SIGNAL(UP_pressed()), snake, SLOT(dirUP()));
+  disconnect(this, SIGNAL(DOWN_pressed()), snake, SLOT(dirDOWN()));
+  disconnect(this, SIGNAL(RIGHT_pressed()), snake, SLOT(dirRIGHT()));
+  disconnect(this, SIGNAL(LEFT_pressed()), snake, SLOT(dirLEFT()));
+}

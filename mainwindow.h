@@ -37,6 +37,9 @@ class MainWindow : public QMainWindow {
   Background *bg;
   Snake *snake;
 
+  void connectArrowKeysToSnake();
+  void disConnectArrowKeysToSnake();
+
  signals:
   // Move around
   void UP_pressed();
