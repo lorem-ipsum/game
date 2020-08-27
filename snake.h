@@ -1,6 +1,7 @@
 #ifndef SNAKE_H
 #define SNAKE_H
 
+#include <QJsonArray>
 #include <QList>
 #include <QMouseEvent>
 #include <QTimer>
@@ -22,9 +23,18 @@ class Snake : public QWidget {
   explicit Snake(QWidget* parent);
   ~Snake();
 
+  QList<POS> getBody() const { return body_; }
+  QList<POS> getObstacles() const { return obstacles_; }
+  DIR getDir() const { return dir_; }
+  int getTime() const { return time_; }
+  POS getBug() const { return bug->getPs(); }
+
   void restart();  // Code of shit. Is there a better approach?
 
   bool validMove(const POS& next);
+
+  void load(QJsonArray body, QJsonArray obstacles, QJsonArray bug, DIR dir,
+            int time);
 
   QTimer* timer;
 
@@ -38,11 +48,12 @@ class Snake : public QWidget {
   void toggleObstacle(int i, int j);
 
  private:
-  QList<POS> body;
-  QList<POS> obstacles;
-  DIR dir;
+  QList<POS> body_;
+  QList<POS> obstacles_;
+  DIR dir_;
+  int time_;
   Bug* bug;
-  int afterEating;
+  int afterEating_;
 
  public slots:
   void oneMove();

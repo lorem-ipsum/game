@@ -52,6 +52,8 @@
     "qkeyeventtransition": "cpp",
     "qkeyevent": "cpp",
     "qmenu": "cpp",
-    "qmenubar": "cpp"
+    "qmenubar": "cpp",
+    "qfiledialog": "cpp",
+    "qaction": "cpp"
   }
 }

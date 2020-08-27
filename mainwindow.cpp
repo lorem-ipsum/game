@@ -3,12 +3,19 @@
 #include <QAction>
 #include <QApplication>  // To use 'qApp', this file must be #included.
 #include <QButtonGroup>
+#include <QFile>
+#include <QFileDialog>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonParseError>
 #include <QKeySequence>
 #include <QLabel>
 #include <QMenu>
 #include <QMenuBar>
 #include <QPushButton>
 #include <QTextStream>
+#include <QToolBar>
 
 #include "background.h"
 #include "bug.h"
@@ -110,6 +117,13 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     btns->buttons()[i]->setFont(QFont("Helvetica"));
     btns->buttons()[i]->setGeometry(1280, 640 + 80 * i, 80, 40);
   }
+
+  // Toolbar
+  // QToolBar *toolBar = new QToolBar(this);
+  // // toolBar->setGeometry(20, 20, 100, 50);
+  // toolBar->setStyleSheet(
+  //     "background-color:rgb(200,40,43);color:rgb(204,204,204)");
+  // toolBar->addAction("Start", startAction);
 
   // Initial state
 
@@ -233,6 +247,63 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     // Save game
     qDebug() << "Save";
 
+    QFile saveFile("save.json");
+
+    saveFile.open(QIODevice::WriteOnly);
+
+    QFileDialog::getSaveFileName(this, tr("Choose a directory to save"),
+                                 "save.json", tr("JSON Files(*json)"));
+
+    // Write JSON to 'saveFile'
+
+    QJsonObject rootObject;
+
+    // Save body
+    QJsonArray bodyArray;
+    for (POS bodygrid : snake->getBody()) {
+      QJsonArray grid;
+      grid.append(QJsonValue(bodygrid.first));
+      grid.append(QJsonValue(bodygrid.second));
+      bodyArray.append(grid);
+    }
+    rootObject.insert("body", bodyArray);
+
+    // Save obstacles
+    QJsonArray obsArray;
+    for (POS obsgrid : snake->getObstacles()) {
+      QJsonArray obs;
+      obs.append(QJsonValue(obsgrid.first));
+      obs.append(QJsonValue(obsgrid.second));
+      obsArray.append(obs);
+    }
+    rootObject.insert("obstacles", obsArray);
+
+    // Save bug
+    QJsonArray bugArray;
+    bugArray.append(QJsonValue(snake->getBug().first));
+    bugArray.append(QJsonValue(snake->getBug().second));
+    rootObject.insert("bug", bugArray);
+
+    // Save dir
+    // Code of shit, could anyone help me?
+    if (snake->getDir() == UP)
+      rootObject.insert("dir", "UP");
+    else if (snake->getDir() == DOWN)
+      rootObject.insert("dir", "DOWN");
+    else if (snake->getDir() == RIGHT)
+      rootObject.insert("dir", "RIGHT");
+    else if (snake->getDir() == LEFT)
+      rootObject.insert("dir", "LEFT");
+
+    // Save time
+    rootObject.insert("time", QJsonValue(snake->getTime()));
+
+    // Save doc
+    QJsonDocument jsonDoc;
+    jsonDoc.setObject(rootObject);
+    saveFile.write(jsonDoc.toJson());
+    saveFile.close();
+
     // disable actions and hide buttons
     // startAction->setEnabled(false);
     // pauseAction->setEnabled(false);
@@ -251,6 +322,48 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
   connect(loadAction, &QAction::triggered, [=]() {
     // Load game
     qDebug() << "Load";
+
+    QString fileName = QFileDialog::getOpenFileName(
+        this, tr("Choose a file to load in"), "", tr("JSON Files(*json)"));
+    // qDebug() << "filename : " << fileName;
+
+    if (!fileName.isEmpty()) {
+      QFile file(fileName);
+      if (file.open(QFile::ReadOnly)) {
+        QByteArray allData = file.readAll();
+        file.close();
+        // qDebug() << array;
+
+        QJsonParseError json_error;
+        QJsonDocument jsonDoc(QJsonDocument::fromJson(allData, &json_error));
+
+        if (json_error.error != QJsonParseError::NoError) {
+          qDebug() << "json error!";
+          exit(1);
+        } else {
+          QJsonObject rootObj = jsonDoc.object();
+          QJsonArray body = rootObj.value("body").toArray();
+          QJsonArray obstacles = rootObj.value("obstacles").toArray();
+          QJsonArray bug = rootObj.value("bug").toArray();
+          QString strdir = rootObj.value("dir").toString();
+
+          // Code of shit. Is there a simple way of converting string to enum?
+          DIR dir = RIGHT;
+          if (strdir == "UP")
+            dir = UP;
+          else if (strdir == "DOWN")
+            dir = DOWN;
+          else if (strdir == "RIGHT")
+            dir = RIGHT;
+          else if (strdir == "LEFT")
+            dir = LEFT;
+
+          int time = rootObj.value("time").toInt();
+
+          snake->load(body, obstacles, bug, dir, time);
+        }
+      }
+    }
 
     // disable actions and hide buttons
     // startAction->setEnabled(false);

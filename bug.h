@@ -23,7 +23,6 @@ class Bug : public QWidget {
 
   POS getPs() const;
 
- private:
   POS ps;
 };
 
