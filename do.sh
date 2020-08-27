@@ -1,4 +1,4 @@
 qmake
 make
 make clean
-./playground
+./game

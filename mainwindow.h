@@ -46,8 +46,5 @@ class MainWindow : public QMainWindow {
   void DOWN_pressed();
   void RIGHT_pressed();
   void LEFT_pressed();
-
-  //  public slots:
-  //   void newBug();
 };
 #endif  // MAINWINDOW_H
