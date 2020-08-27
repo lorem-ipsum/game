@@ -119,11 +119,17 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
   }
 
   // Toolbar
-  // QToolBar *toolBar = new QToolBar(this);
-  // // toolBar->setGeometry(20, 20, 100, 50);
+  QToolBar *toolBar = new QToolBar(this);
+  toolBar->setGeometry(30, 30, 1100, 40);
+  toolBar->addActions({startAction, pauseAction, resumeAction, restartAction,
+                       saveAction, loadAction, exitAction});
+  toolBar->setMovable(false);
+
+  // this->addToolBar(Qt::RightToolBarArea, toolBar);
+  this->addToolBar(toolBar);
+  // toolBar->setGeometry(20, 20, 100, 50);
   // toolBar->setStyleSheet(
   //     "background-color:rgb(200,40,43);color:rgb(204,204,204)");
-  // toolBar->addAction("Start", startAction);
 
   // Initial state
 
