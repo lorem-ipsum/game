@@ -146,11 +146,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
   toolBar->setMovable(false);
   toolBar->setFont(QFont("Helvetica"));
 
-  // this->addToolBar(Qt::RightToolBarArea, toolBar);
-  // toolBar->setGeometry(20, 20, 100, 50);
-  // toolBar->setStyleSheet(
-  //     "background-color:rgb(200,40,43);color:rgb(204,204,204)");
-
   // Initial state
 
   startAction->setEnabled(true);
@@ -245,7 +240,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 
     setFocusProxy(snake);
     snake->setFocus();
-    // snake->setFocusPolicy(Qt::StrongFocus);
     connectArrowKeysToSnake();
   });
 
@@ -273,14 +267,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 
     setFocusProxy(snake);
     snake->setFocus();
-    // snake->setFocusPolicy(Qt::StrongFocus);
     disConnectArrowKeysToSnake();
   });
 
   connect(saveAction, &QAction::triggered, [=]() {
-    // Save game
-    // qDebug() << "Save";
-
     QString fileName =
         QFileDialog::getSaveFileName(this, tr("Choose a directory to save"),
                                      "save.json", tr("JSON Files(*json)"));
@@ -339,35 +329,21 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     saveFile.write(jsonDoc.toJson());
     saveFile.close();
 
-    // disable actions and hide buttons
-    // startAction->setEnabled(false);
-    // pauseAction->setEnabled(false);
-    // resumeAction->setEnabled(false);
-    // restartAction->setEnabled(false);
-    // saveAction->setEnabled(false);
-    // loadAction->setEnabled(false);
-
     snake->timeToToggleObstacles = false;
 
     setFocusProxy(snake);
     snake->setFocus();
-    // snake->setFocusPolicy(Qt::StrongFocus);
   });
 
   connect(loadAction, &QAction::triggered, [=]() {
-    // Load game
-    // qDebug() << "Load";
-
     QString fileName = QFileDialog::getOpenFileName(
         this, tr("Choose a file to load in"), "", tr("JSON Files(*json)"));
-    // qDebug() << "filename : " << fileName;
 
     if (!fileName.isEmpty()) {
       QFile file(fileName);
       if (file.open(QFile::ReadOnly)) {
         QByteArray allData = file.readAll();
         file.close();
-        // qDebug() << array;
 
         QJsonParseError json_error;
         QJsonDocument jsonDoc(QJsonDocument::fromJson(allData, &json_error));
@@ -402,26 +378,15 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 
     label->setText(QString("Score: %1").arg(snake->getTime()));
 
-    // disable actions and hide buttons
-    // startAction->setEnabled(false);
-    // pauseAction->setEnabled(false);
-    // resumeAction->setEnabled(false);
-    // restartAction->setEnabled(false);
-    // saveAction->setEnabled(false);
-    // loadAction->setEnabled(false);
-
     snake->timeToToggleObstacles = false;
 
     setFocusProxy(snake);
     snake->setFocus();
-    // snake->setFocusPolicy(Qt::StrongFocus);
   });
 
   connect(snake, SIGNAL(gameOver()), gameOverAction, SLOT(trigger()));
 
   connect(gameOverAction, &QAction::triggered, [=]() {
-    // qDebug() << "Game Over";
-    // disable actions and hide buttons
     startAction->setEnabled(false);
     pauseAction->setEnabled(false);
     resumeAction->setEnabled(false);
@@ -439,8 +404,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     setFocusProxy(snake);
     snake->setFocus();
   });
-
-  // snake->setFocusPolicy(Qt::StrongFocus);
 }
 
 MainWindow::~MainWindow() {}

@@ -17,7 +17,6 @@ Snake::Snake(QWidget* parent) : QWidget(parent) {
   bug = new Bug(body_, obstacles_, this);
 
   timer = new QTimer(this);
-  // timer->start(80);
   connect(timer, SIGNAL(timeout()), this, SLOT(oneMove()));
   connect(timer, SIGNAL(timeout()), this, SLOT(update()));
 }
@@ -39,7 +38,6 @@ void Snake::restart() {
   bug = new Bug(body_, obstacles_, this);
   delete timer;
   timer = new QTimer(this);
-  // timer->start(80);
   connect(timer, SIGNAL(timeout()), this, SLOT(oneMove()));
   connect(timer, SIGNAL(timeout()), this, SLOT(update()));
 
@@ -75,7 +73,6 @@ void Snake::paintEvent(QPaintEvent* event) {
 }
 
 void Snake::oneMove() {
-  // qDebug() << "oneMove!";
   ++time_;
   emit timeFlies(time_);
 
@@ -118,9 +115,6 @@ void Snake::oneMove() {
 }
 
 bool Snake::validMove(const POS& next) {
-  // qDebug() << "next is"
-  //          << "(" << next.first << ", " << next.second << ")\n";
-
   if (body_.contains(next) || obstacles_.contains(next)) return false;
 
   if (next.first < 0 || next.first >= 40 || next.second < 0 ||
@@ -131,25 +125,21 @@ bool Snake::validMove(const POS& next) {
 }
 
 void Snake::dirUP() {
-  // qDebug() << "UP";
   if (dir_ == UP || dir_ == DOWN) return;
   POS up = {body_.at(0).first, body_.at(0).second - 1};
   if (up != body_.at(1)) dir_ = UP;
 }
 void Snake::dirDOWN() {
-  // qDebug() << "DOWN";
   if (dir_ == UP || dir_ == DOWN) return;
   POS down = {body_.at(0).first, body_.at(0).second + 1};
   if (down != body_.at(1)) dir_ = DOWN;
 }
 void Snake::dirRIGHT() {
-  // qDebug() << "RIGHT";
   if (dir_ == RIGHT || dir_ == LEFT) return;
   POS right = {body_.at(0).first + 1, body_.at(0).second};
   if (right != body_.at(1)) dir_ = RIGHT;
 }
 void Snake::dirLEFT() {
-  // qDebug() << "LEFT";
   if (dir_ == RIGHT || dir_ == LEFT) return;
   POS left = {body_.at(0).first - 1, body_.at(0).second};
   if (left != body_.at(1)) dir_ = LEFT;
@@ -178,7 +168,6 @@ void Snake::toggleObstacle(int i, int j) {
 void Snake::load(QJsonArray body, QJsonArray obstacles, QJsonArray rbug,
                  DIR dir, int time) {
   // Load body
-
   body_ = {};
   for (auto grid : body) {
     int i = grid.toArray().at(0).toInt();
@@ -187,7 +176,6 @@ void Snake::load(QJsonArray body, QJsonArray obstacles, QJsonArray rbug,
   }
 
   // Load obstacles
-
   obstacles_ = {};
   for (auto obs : obstacles) {
     int i = obs.toArray().at(0).toInt();
@@ -196,16 +184,13 @@ void Snake::load(QJsonArray body, QJsonArray obstacles, QJsonArray rbug,
   }
 
   // Load bugs
-
   bug->ps = {rbug.toVariantList().at(0).toInt(),
              rbug.toVariantList().at(1).toInt()};
 
   // Load direction
-
   dir_ = dir;
 
   // Load time
-
   time_ = time;
 
   update();
