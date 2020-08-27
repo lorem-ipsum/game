@@ -47,13 +47,13 @@ void Snake::paintEvent(QPaintEvent* event) {
 
   // Draw the snake
   for (POS body : grids) {
-    painter->fillRect(5 + 16 * body.first, 5 + 16 * body.second, 14, 14,
+    painter->fillRect(5 + 28 * body.first, 5 + 28 * body.second, 26, 26,
                       Qt::gray);
   }
 
   // Draw the bug
-  painter->fillRect(5 + 16 * bug->getPs().first, 5 + 16 * bug->getPs().second,
-                    14, 14, Qt::red);
+  painter->fillRect(5 + 28 * bug->getPs().first, 5 + 28 * bug->getPs().second,
+                    26, 26, Qt::red);
 
   painter->end();
 }

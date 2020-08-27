@@ -5,6 +5,9 @@
 #include <QKeyEvent>
 #include <QMainWindow>
 
+#include "background.h"
+#include "snake.h"
+
 class MainWindow : public QMainWindow {
   Q_OBJECT
 
@@ -29,6 +32,10 @@ class MainWindow : public QMainWindow {
       }
     }
   }
+
+ private:
+  Background *bg;
+  Snake *snake;
 
  signals:
   // Move around

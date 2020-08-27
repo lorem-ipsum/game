@@ -13,7 +13,7 @@ void Background::paintEvent(QPaintEvent* event) {
   painter->setPen(*pen);
   for (int i = 0; i < 40; ++i) {
     for (int j = 0; j < 40; ++j) {
-      painter->drawRect(4 + 16 * i, 4 + 16 * j, 16, 16);
+      painter->drawRect(4 + 28 * i, 4 + 28 * j, 28, 28);
     }
   }
   painter->end();
