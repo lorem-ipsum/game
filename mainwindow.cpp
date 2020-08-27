@@ -42,65 +42,26 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
   QAction *startAction = new QAction(this);
   startAction->setText("Start");
   startAction->setShortcut(QKeySequence("Ctrl+B"));
-  connect(startAction, &QAction::triggered, [=]() {
-    snake->timer->start(80);
-
-    setFocusProxy(snake);
-
-    // hide buttons
-  });
 
   QAction *pauseAction = new QAction(this);
   pauseAction->setText("Pause");
   pauseAction->setShortcut(QKeySequence("Ctrl+G"));
-  connect(pauseAction, &QAction::triggered, [=]() {
-    snake->timer->stop();
-    setFocusProxy(snake);
-
-    // hide buttons
-  });
 
   QAction *resumeAction = new QAction(this);
   resumeAction->setText("Resume");
   resumeAction->setShortcut(QKeySequence("Ctrl+R"));
-  connect(resumeAction, &QAction::triggered, [=]() {
-    snake->timer->start(80);
-    setFocusProxy(snake);
-
-    // hide buttons
-  });
 
   QAction *restartAction = new QAction(this);
   restartAction->setText("Restart");
   restartAction->setShortcut(QKeySequence("Ctrl+T"));
-  connect(restartAction, &QAction::triggered, [=]() {
-    snake->restart();
-    setFocusProxy(snake);
-
-    // hide buttons
-  });
 
   QAction *saveAction = new QAction(this);
   saveAction->setText("Save game");
   saveAction->setShortcut(QKeySequence("Ctrl+S"));
-  connect(saveAction, &QAction::triggered, [=]() {
-    // Save game
-    qDebug() << "Save";
-    setFocusProxy(snake);
-
-    // hide buttons
-  });
 
   QAction *loadAction = new QAction(this);
   loadAction->setText("Load game");
   loadAction->setShortcut(QKeySequence("Ctrl+L"));
-  connect(loadAction, &QAction::triggered, [=]() {
-    // Load game
-    qDebug() << "Load";
-    setFocusProxy(snake);
-
-    // hide buttons
-  });
 
   // Menu
   QMenuBar *menubar = new QMenuBar(this);
@@ -144,16 +105,147 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
   btns->addButton(exitBtn, 6);
 
   for (int i = 0; i < 7; ++i) {
+    btns->buttons()[i]->setFont(QFont("Helvetica"));
     btns->buttons()[i]->setGeometry(1280, 640 + 80 * i, 80, 40);
   }
-  // int i = 0;
-  // for (auto btn : btns->buttons()) {
 
-  //   ++i;
-  // }
+  // Initial state
 
-  //   btn->setFont(QFont("Helvetica"));
-  //   btn->setGeometry(1280, 640 + 80 * i, 80, 40);
+  startAction->setEnabled(true);
+  pauseAction->setEnabled(false);
+  resumeAction->setEnabled(false);
+  restartAction->setEnabled(false);
+  saveAction->setEnabled(false);
+  loadAction->setEnabled(true);
+
+  startBtn->setEnabled(true);
+  pauseBtn->setEnabled(false);
+  resumeBtn->setEnabled(false);
+  restartBtn->setEnabled(false);
+  saveBtn->setEnabled(false);
+  loadBtn->setEnabled(true);
+
+  // setFocusProxy(startBtn);
+
+  connect(startAction, &QAction::triggered, [=]() {
+    snake->timer->start(80);
+
+    // disable actions and hide buttons
+    startAction->setEnabled(false);
+    pauseAction->setEnabled(true);
+    resumeAction->setEnabled(false);
+    restartAction->setEnabled(false);
+    saveAction->setEnabled(false);
+    loadAction->setEnabled(false);
+
+    startBtn->setEnabled(false);
+    pauseBtn->setEnabled(true);
+    resumeBtn->setEnabled(false);
+    restartBtn->setEnabled(false);
+    saveBtn->setEnabled(false);
+    loadBtn->setEnabled(false);
+
+    setFocusProxy(snake);
+    snake->setFocusPolicy(Qt::StrongFocus);
+  });
+
+  connect(pauseAction, &QAction::triggered, [=]() {
+    snake->timer->stop();
+
+    // disable actions and hide buttons
+    startAction->setEnabled(false);
+    pauseAction->setEnabled(false);
+    resumeAction->setEnabled(true);
+    restartAction->setEnabled(true);
+    saveAction->setEnabled(true);
+    loadAction->setEnabled(false);
+
+    startBtn->setEnabled(false);
+    pauseBtn->setEnabled(false);
+    resumeBtn->setEnabled(true);
+    restartBtn->setEnabled(true);
+    saveBtn->setEnabled(true);
+    loadBtn->setEnabled(false);
+
+    setFocusProxy(snake);
+    snake->setFocusPolicy(Qt::StrongFocus);
+  });
+
+  connect(resumeAction, &QAction::triggered, [=]() {
+    snake->timer->start(80);
+
+    // disable actions and hide buttons
+    startAction->setEnabled(false);
+    pauseAction->setEnabled(true);
+    resumeAction->setEnabled(false);
+    restartAction->setEnabled(false);
+    saveAction->setEnabled(false);
+    loadAction->setEnabled(false);
+
+    startBtn->setEnabled(false);
+    pauseBtn->setEnabled(true);
+    resumeBtn->setEnabled(false);
+    restartBtn->setEnabled(false);
+    saveBtn->setEnabled(false);
+    loadBtn->setEnabled(false);
+
+    setFocusProxy(snake);
+    snake->setFocusPolicy(Qt::StrongFocus);
+  });
+
+  connect(restartAction, &QAction::triggered, [=]() {
+    snake->restart();
+
+    // disable actions and hide buttons
+    startAction->setEnabled(true);
+    pauseAction->setEnabled(false);
+    resumeAction->setEnabled(false);
+    restartAction->setEnabled(false);
+    saveAction->setEnabled(false);
+    loadAction->setEnabled(true);
+
+    startBtn->setEnabled(true);
+    pauseBtn->setEnabled(false);
+    resumeBtn->setEnabled(false);
+    restartBtn->setEnabled(false);
+    saveBtn->setEnabled(false);
+    loadBtn->setEnabled(true);
+
+    setFocusProxy(snake);
+    snake->setFocusPolicy(Qt::StrongFocus);
+  });
+
+  connect(saveAction, &QAction::triggered, [=]() {
+    // Save game
+    qDebug() << "Save";
+
+    // disable actions and hide buttons
+    // startAction->setEnabled(false);
+    // pauseAction->setEnabled(false);
+    // resumeAction->setEnabled(false);
+    // restartAction->setEnabled(false);
+    // saveAction->setEnabled(false);
+    // loadAction->setEnabled(false);
+
+    setFocusProxy(snake);
+    snake->setFocusPolicy(Qt::StrongFocus);
+  });
+
+  connect(loadAction, &QAction::triggered, [=]() {
+    // Load game
+    qDebug() << "Load";
+
+    // disable actions and hide buttons
+    // startAction->setEnabled(false);
+    // pauseAction->setEnabled(false);
+    // resumeAction->setEnabled(false);
+    // restartAction->setEnabled(false);
+    // saveAction->setEnabled(false);
+    // loadAction->setEnabled(false);
+
+    setFocusProxy(snake);
+    snake->setFocusPolicy(Qt::StrongFocus);
+  });
 
   snake->setFocusPolicy(Qt::StrongFocus);
 }
