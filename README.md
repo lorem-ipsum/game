@@ -11,7 +11,7 @@
 - `label`为类`QLabel`的实例，负责显示游戏分数和游戏结束的信息。
 - `cp`为类`QLabel`的实例，负责显示版权信息。
 - `menubar`为类`QMenuBar`的实例，负责生成菜单栏。
-- `toolbar`为类`QToolBar`的实例，负责生成工具栏
+- `toolbar`为类`QToolBar`的实例，负责生成工具栏。
 - `btns`为类`QButtonGroup`的实例，负责展示和维护开始游戏、暂停等操作按钮。
 
 ## 细节介绍
@@ -73,11 +73,12 @@ class Snake : public QWidget {
   DIR getDir() const;
   int getTime() const;
   POS getBug() const;
-  void restart();
+
+  void restart(); // 重新开始游戏，将所有动态组件置零即可
 
   bool validMove(const POS& next); // 判断前进的下一步是否会与障碍或自身相撞
 
-  void load(QJsonArray body, QJsonArray obstacles, QJsonArray bug, DIR dir, int time); // 从文件读入当前状态
+  void load(QJsonArray body, QJsonArray obstacles, QJsonArray bug, DIR dir, int time); // 从文件读入当前状态，调用方负责异常处理和语法分析
 
   QTimer* timer; // 用来计时
 
@@ -126,9 +127,10 @@ class MainWindow : public QMainWindow {
   void keyPressEvent(QKeyEvent *event); // 被调用时发送方向键按下的信号
 
  private:
-  Background *bg;
-  Snake *snake;
+  Background *bg; // 绘制静态地图
+  Snake *snake;   // 绘制动态元素
 
+  // 以下两个函数负责确认是否将按下方向键的事件通知给snake，比如实现暂停时方向键不起作用
   void connectArrowKeysToSnake();
   void disConnectArrowKeysToSnake();
 

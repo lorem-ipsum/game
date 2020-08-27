@@ -35,7 +35,7 @@ class Snake : public QWidget {
   bool validMove(const POS& next);
 
   void load(QJsonArray body, QJsonArray obstacles, QJsonArray bug, DIR dir,
-            int time);  // TODO
+            int time);
 
   QTimer* timer;
 
