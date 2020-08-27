@@ -6,12 +6,14 @@
 #include <QTimer>
 
 Snake::Snake(QWidget* parent) : QWidget(parent) {
-  grids.push_front({19, 19});
-  grids.push_front({20, 19});
+  body.push_front({19, 19});
+  body.push_front({20, 19});
   dir = RIGHT;
   afterEating = 0;
+  obstacles = {};
+  timeToToggleObstacles = true;
 
-  bug = new Bug(this);
+  bug = new Bug(body, obstacles, this);
 
   timer = new QTimer(this);
   // timer->start(80);
@@ -23,13 +25,16 @@ Snake::~Snake() {}
 
 void Snake::restart() {
   // Code of shit. Is there a better approach?
-  grids = {};
-  grids.push_front({19, 19});
-  grids.push_front({20, 19});
+  body = {};
+  body.push_front({19, 19});
+  body.push_front({20, 19});
   dir = RIGHT;
   afterEating = 0;
+  obstacles = {};
+  timeToToggleObstacles = true;
+
   delete bug;
-  bug = new Bug(this);
+  bug = new Bug(body, obstacles, this);
   delete timer;
   timer = new QTimer(this);
   // timer->start(80);
@@ -46,8 +51,14 @@ void Snake::paintEvent(QPaintEvent* event) {
   painter->setPen(Qt::NoPen);
 
   // Draw the snake
-  for (POS body : grids) {
-    painter->fillRect(5 + 28 * body.first, 5 + 28 * body.second, 26, 26,
+  for (POS grid : body) {
+    painter->fillRect(5 + 28 * grid.first, 5 + 28 * grid.second, 26, 26,
+                      Qt::green);
+  }
+
+  // Draw the obstacles
+  for (POS obs : obstacles) {
+    painter->fillRect(5 + 28 * obs.first, 5 + 28 * obs.second, 26, 26,
                       Qt::gray);
   }
 
@@ -61,7 +72,7 @@ void Snake::paintEvent(QPaintEvent* event) {
 void Snake::oneMove() {
   // qDebug() << "oneMove!";
 
-  POS next = grids.front();
+  POS next = body.front();
   switch (dir) {
     case UP:
       next = {next.first, next.second - 1};
@@ -80,14 +91,14 @@ void Snake::oneMove() {
       break;
   }
 
-  if (!validMove(next)) {  //撞到墙，之后还要考虑障碍 TODO
+  if (!validMove(next)) {  //撞到墙 or 障碍
     emit gameOver();
   } else if (next != bug->getPs() &&
              afterEating == 0) {  //没有吃到事物，且并非进食后片刻
-    grids.push_front(next);
-    grids.pop_back();
+    body.push_front(next);
+    body.pop_back();
   } else {  //吃到了事物，或者刚刚进食
-    grids.push_front(next);
+    body.push_front(next);
     ++afterEating;
     if (afterEating == 3) afterEating = 0;
   }
@@ -95,7 +106,7 @@ void Snake::oneMove() {
   if (next == bug->getPs()) {  //生成新食物
     do {
       bug->generateRandomPs();
-    } while (grids.contains(bug->getPs()));
+    } while (body.contains(bug->getPs()) || obstacles.contains(bug->getPs()));
   }
 }
 
@@ -103,7 +114,7 @@ bool Snake::validMove(const POS& next) {
   // qDebug() << "next is"
   //          << "(" << next.first << ", " << next.second << ")\n";
 
-  if (grids.contains(next)) return false;
+  if (body.contains(next) || obstacles.contains(next)) return false;
 
   if (next.first < 0 || next.first >= 40 || next.second < 0 ||
       next.second >= 40)
@@ -131,4 +142,24 @@ void Snake::dirLEFT() {
   qDebug() << "LEFT";
   if (dir == RIGHT || dir == LEFT) return;
   dir = LEFT;
+}
+
+void Snake::mousePressEvent(QMouseEvent* event) {
+  if (!timeToToggleObstacles) return;
+  if (event->button() == Qt::LeftButton) {
+    int i = event->x() / 28;
+    int j = event->y() / 28;
+    if (i < 0 || i >= 40 || j < 0 || j >= 40) return;
+    toggleObstacle(i, j);
+  }
+}
+
+void Snake::toggleObstacle(int i, int j) {
+  POS obs{i, j};
+  if (obstacles.contains(obs)) {
+    obstacles.removeOne(obs);
+  } else {
+    obstacles.append(obs);
+  }
+  update();
 }

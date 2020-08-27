@@ -1,9 +1,10 @@
 #include "bug.h"
 
-Bug::Bug(QWidget* parent) : QWidget(parent) {
+Bug::Bug(QList<POS> body, QList<POS> obstacles, QWidget* parent)
+    : QWidget(parent) {
   do {
     generateRandomPs();
-  } while (ps == POS{19, 19} || ps == POS{20, 19});
+  } while (body.contains(ps) || obstacles.contains(ps));
 }
 
 Bug::~Bug() {}

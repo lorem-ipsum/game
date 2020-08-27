@@ -63,6 +63,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
   loadAction->setText("Load game");
   loadAction->setShortcut(QKeySequence("Ctrl+L"));
 
+  QAction *gameOverAction = new QAction(this);
+
   // Menu
   QMenuBar *menubar = new QMenuBar(this);
 
@@ -145,6 +147,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     saveBtn->setEnabled(false);
     loadBtn->setEnabled(false);
 
+    snake->timeToToggleObstacles = false;
+
     setFocusProxy(snake);
     snake->setFocus();
     // snake->setFocusPolicy(Qt::StrongFocus);
@@ -167,6 +171,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     restartBtn->setEnabled(true);
     saveBtn->setEnabled(true);
     loadBtn->setEnabled(false);
+
+    snake->timeToToggleObstacles = false;
 
     setFocusProxy(snake);
     snake->setFocus();
@@ -191,6 +197,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     saveBtn->setEnabled(false);
     loadBtn->setEnabled(false);
 
+    snake->timeToToggleObstacles = false;
+
     setFocusProxy(snake);
     snake->setFocus();
     // snake->setFocusPolicy(Qt::StrongFocus);
@@ -214,6 +222,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     saveBtn->setEnabled(false);
     loadBtn->setEnabled(true);
 
+    snake->timeToToggleObstacles = true;
+
     setFocusProxy(snake);
     snake->setFocus();
     // snake->setFocusPolicy(Qt::StrongFocus);
@@ -230,6 +240,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     // restartAction->setEnabled(false);
     // saveAction->setEnabled(false);
     // loadAction->setEnabled(false);
+
+    snake->timeToToggleObstacles = false;
 
     setFocusProxy(snake);
     snake->setFocus();
@@ -248,9 +260,34 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     // saveAction->setEnabled(false);
     // loadAction->setEnabled(false);
 
+    snake->timeToToggleObstacles = false;
+
     setFocusProxy(snake);
     snake->setFocus();
     // snake->setFocusPolicy(Qt::StrongFocus);
+  });
+
+  connect(snake, SIGNAL(gameOver()), gameOverAction, SLOT(trigger()));
+
+  connect(gameOverAction, &QAction::triggered, [=]() {
+    qDebug() << "Game Over";
+    // disable actions and hide buttons
+    startAction->setEnabled(false);
+    pauseAction->setEnabled(false);
+    resumeAction->setEnabled(false);
+    restartAction->setEnabled(true);
+    saveAction->setEnabled(false);
+    loadAction->setEnabled(false);
+
+    startBtn->setEnabled(false);
+    pauseBtn->setEnabled(false);
+    resumeBtn->setEnabled(false);
+    restartBtn->setEnabled(true);
+    saveBtn->setEnabled(false);
+    loadBtn->setEnabled(false);
+
+    setFocusProxy(snake);
+    snake->setFocus();
   });
 
   // snake->setFocusPolicy(Qt::StrongFocus);

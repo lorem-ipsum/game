@@ -2,6 +2,7 @@
 #define SNAKE_H
 
 #include <QList>
+#include <QMouseEvent>
 #include <QTimer>
 #include <QWidget>
 #include <utility>
@@ -27,11 +28,18 @@ class Snake : public QWidget {
 
   QTimer* timer;
 
+  bool timeToToggleObstacles;
+
  protected:
   void paintEvent(QPaintEvent* event);
 
+  void mousePressEvent(QMouseEvent* event);
+
+  void toggleObstacle(int i, int j);
+
  private:
-  QList<POS> grids;
+  QList<POS> body;
+  QList<POS> obstacles;
   DIR dir;
   Bug* bug;
   int afterEating;

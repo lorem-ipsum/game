@@ -2,6 +2,7 @@
 #define BUG_H
 
 #include <QDebug>
+#include <QList>
 #include <QPainter>
 #include <QTime>
 #include <QWidget>
@@ -13,7 +14,8 @@
 
 class Bug : public QWidget {
  public:
-  explicit Bug(QWidget* parent = nullptr);
+  explicit Bug(QList<POS> body, QList<POS> obstacles,
+               QWidget* parent = nullptr);
   ~Bug();
 
   void generateRandomPs();
