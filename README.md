@@ -144,3 +144,9 @@ class MainWindow : public QMainWindow {
 ```
 
 所有除转向之外的逻辑信息均在`MainWindow`的构造函数中完成。
+
+## 其他
+
+- Save时将局面保存为一个json文件，Load时打开已保存的文件，读取内容并转化为局面。具体来说，json文件中包括蛇身、当前前进方向、障碍位置、果实位置和当前时间。
+- 在鼠标点击按钮时，focus会改变，导致方向键重定向到`btns`处，无法正常改变蛇的前进方向。因此每次触发按钮之后，要调用`snake->setFocus()`。
+- 在`PushButton`、`Menubar`和`Toolbar`处共用一个`QAction`，可以减少代码冗余，并共享状态。
